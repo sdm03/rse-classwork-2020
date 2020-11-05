@@ -26,11 +26,11 @@ def test_several_intervals():
     assert result == expected
 
 def test_boundary_overlap():
-    # Some test code
     large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
     short = time_range("2010-01-12 12:00:00", "2010-01-12 13:00:00")
 
-    expected = [('2010-01-12 12:00:00', '2010-01-12 12:00:00')]
+    # Expect an empty list since they do not overlap
+    expected = []
     result = compute_overlap_time(large, short)
     assert result == expected
     
