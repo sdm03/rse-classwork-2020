@@ -43,6 +43,13 @@ def test_backwards_time():
     with raises(ValueError):
         compute_overlap_time(large, short)
 
+def test_empty_range():
+    large = time_range("2010-01-12 12:00:00", "2010-01-12 10:00:00")
+    short = []
+
+    with raises(ValueError):
+        compute_overlap_time(large, short)
+
 
 if __name__ == "__main__":
     test_several_intervals()
