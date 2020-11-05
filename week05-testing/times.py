@@ -16,9 +16,21 @@ def compute_overlap_time(range1, range2):
     overlap_time = []
 
     # Check that start2 is in range 1 and raise exception/ print to console
-
     for start1, end1 in range1:
+        if start1 >  end1:
+            raise ValueError("range1 incorrect. Cannot accept backwards time range")
         for start2, end2 in range2:
+            if start2 > end2:
+                raise ValueError("range2 incorrect. Cannot accept backwards time range")
+
+            if start2 == end1:
+                print('Equal')
+                break
+
+            if start2 > end1:
+                print('Boundary')
+                break
+
             low = max(start1, start2)
             high = min(end1, end2)
             overlap_time.append((low, high))
