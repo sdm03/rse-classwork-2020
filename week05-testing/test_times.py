@@ -1,4 +1,5 @@
 from times import compute_overlap_time, time_range
+from pytest import raises
 
 def test_given_input():
     large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
@@ -22,8 +23,8 @@ def test_several_intervals():
     short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 3, 60)
     
     result = compute_overlap_time(large, short)
-    expected = [('2010-01-12 10:30:00', '2010-01-12 10:34:20'), ('2010-01-12 10:35:20', '2010-01-12 10:39:20'), ('2010-01-12 10:40:40', '2010-01-12 10:39:20'), ('2010-01-12 10:40:20', '2010-01-12 10:34:20'), ('2010-01-12 10:40:20', '2010-01-12 10:39:40'), ('2010-01-12 10:40:40', '2010-01-12 10:45:00'), ('2010-01-12 11:20:40', '2010-01-12 10:34:20'), ('2010-01-12 11:20:40', '2010-01-12 10:39:40'), ('2010-01-12 11:20:40', '2010-01-12 10:45:00')]
-    assert result == expected
+    expected = [('2010-01-12 10:30:00', '2010-01-12 10:34:20'), ('2010-01-12 10:35:20', '2010-01-12 10:39:20'), ('2010-01-12 10:40:20', '2010-01-12 10:34:20'), ('2010-01-12 10:40:20', '2010-01-12 10:39:40'), ('2010-01-12 10:40:40', '2010-01-12 10:45:00'), ('2010-01-12 11:20:40', '2010-01-12 10:34:20'), ('2010-01-12 11:20:40', '2010-01-12 10:39:40'), ('2010-01-12 11:20:40', '2010-01-12 10:45:00')]
+    assert result  == expected
 
 def test_boundary_overlap():
     large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
@@ -34,5 +35,14 @@ def test_boundary_overlap():
     result = compute_overlap_time(large, short)
     assert result == expected
     
+
+def test_backwards_time():
+    large = time_range("2010-01-12 12:00:00", "2010-01-12 10:00:00")
+    short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00")
+
+    with raises(ValueError):
+        compute_overlap_time(large, short)
+
+
 if __name__ == "__main__":
-    test_boundary_overlap()
+    test_several_intervals()
