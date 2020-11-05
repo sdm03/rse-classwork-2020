@@ -12,7 +12,11 @@ def time_range(start_time, end_time, number_of_intervals=1, gap_between_interval
 
 
 def compute_overlap_time(range1, range2):
+
     overlap_time = []
+
+    # Check that start2 is in range 1 and raise exception/ print to console
+
     for start1, end1 in range1:
         for start2, end2 in range2:
             low = max(start1, start2)
