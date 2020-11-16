@@ -1,26 +1,23 @@
 from times import compute_overlap_time, time_range
 import pytest 
 from pytest import raises
+stimport yaml
 
-large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
-short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
-
-# Defining more input ranges
-differentday = time_range("2010-01-13 10:30:00", "2010-01-13 10:45:00", 2, 60)
-large_3_intervals = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00", 3, 60)
-short_3_intervals = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 3, 60)
-short_boundary_overlap = time_range("2010-01-12 12:00:00", "2010-01-12 13:00:00")
-
-# Defining expected
-empty = []
-large_short = [('2010-01-12 10:30:00', '2010-01-12 10:37:00'), ('2010-01-12 10:38:00', '2010-01-12 10:45:00')]
-large_3_intervals_short_3_intervals = [('2010-01-12 10:30:00', '2010-01-12 10:34:20'), ('2010-01-12 10:35:20', '2010-01-12 10:39:20'), ('2010-01-12 10:40:20', '2010-01-12 10:34:20'), ('2010-01-12 10:40:20', '2010-01-12 10:39:40'), ('2010-01-12 10:40:40', '2010-01-12 10:45:00'), ('2010-01-12 11:20:40', '2010-01-12 10:34:20'), ('2010-01-12 11:20:40', '2010-01-12 10:39:40'), ('2010-01-12 11:20:40', '2010-01-12 10:45:00')]
+# Load the yaml file
+with open('fixture.yaml', 'r') as yamlfile:
+    fixture = yaml.safe_load(yamlfile)
+    print('Loaded file', fixture)
 
 
-@pytest.mark.parametrize("large, short, expected",[(large, short, large_short), (large, differentday, empty), (large_3_intervals, short_3_intervals, large_3_intervals_short_3_intervals), (large, short_boundary_overlap, empty )])
-def test_all_edge_cases(large, short, expected):
-    result = compute_overlap_time(large, short)
-    assert result == expected
+@pytest.mark.parametrize("test_name", fixture)
+# Fixture is a dictionary containing test name and the required parameters
+def test_all_edge_cases(test_name):
+    # Test name is a dictionary containing range1, range2, and expected
+    properties = list(test_name.values())[0]
+    first_range = time_range(*properties['time_range_1'])  # with * = All of them
+    second_range = time_range(*properties['time_range_2'])
+    expected = [(start, stop) for start, stop in properties['expected']]
+    assert compute_overlap_time(first_range, second_range) == expected
 
 '''
 def test_given_input():
@@ -42,10 +39,10 @@ def test_no_overlap():
 def test_several_intervals():
     # Some test code
     large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00", 3, 60)
-    short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 3, 60)
+    short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
     
     result = compute_overlap_time(large, short)
-    expected = [('2010-01-12 10:30:00', '2010-01-12 10:34:20'), ('2010-01-12 10:35:20', '2010-01-12 10:39:20'), ('2010-01-12 10:40:20', '2010-01-12 10:34:20'), ('2010-01-12 10:40:20', '2010-01-12 10:39:40'), ('2010-01-12 10:40:40', '2010-01-12 10:45:00'), ('2010-01-12 11:20:40', '2010-01-12 10:34:20'), ('2010-01-12 11:20:40', '2010-01-12 10:39:40'), ('2010-01-12 11:20:40', '2010-01-12 10:45:00')]
+    expected = [('2010-01-12 10:30:00', '2010-01-12 10:37:00'), ('2010-01-12 10:38:00', '2010-01-12 10:39:20'), ('2010-01-12 10:40:20', '2010-01-12 10:45:00')]
     assert result  == expected
 
 def test_boundary_overlap():
@@ -74,4 +71,5 @@ def test_empty_range():
 
 
 if __name__ == "__main__":
+
     test_several_intervals()
