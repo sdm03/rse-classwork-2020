@@ -26,15 +26,13 @@ def compute_overlap_time(range1, range2):
             if start2 > end2:
                 raise ValueError("range2 incorrect. Cannot accept backwards time range")
 
-            if start2 == end1:
-                break
+            if start1 <= end2 and start2 <= end1:
+                low = max(start1, start2)
+                high = min(end1, end2)
+                if high==low:
+                    continue
+                overlap_time.append((low, high))
 
-            if start2 > end1:
-                break
-
-            low = max(start1, start2)
-            high = min(end1, end2)
-            overlap_time.append((low, high))
     return overlap_time
 
 if __name__ == "__main__":
