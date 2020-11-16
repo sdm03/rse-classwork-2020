@@ -1,7 +1,7 @@
 from times import compute_overlap_time, time_range
 import pytest 
 from pytest import raises
-stimport yaml
+import yaml
 
 # Load the yaml file
 with open('fixture.yaml', 'r') as yamlfile:
