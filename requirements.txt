@@ -1,5 +1,4 @@
 pyyaml
 pytest-cov
-json
 pytest
 requests
