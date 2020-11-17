@@ -4,7 +4,7 @@ from pytest import raises
 import yaml
 
 # Load the yaml file
-with open('fixture.yaml', 'r') as yamlfile:
+with open('week05-testing/test_times.py', 'r') as yamlfile:
     fixture = yaml.safe_load(yamlfile)
     print('Loaded file', fixture)
 
