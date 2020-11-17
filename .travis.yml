@@ -22,7 +22,7 @@ before_install:
 
 install:
   # Replace dep1 dep2 ... with your dependencies
-  - conda create -q -n test-env python=$TRAVIS_PYTHON_VERSION pyyaml pytest yaml scipy pytest-cov
+  - conda create -q -n test-env --file requirements.txt python=$TRAVIS_PYTHON_VERSION
   - source activate test-env
 
 script:
