@@ -26,4 +26,5 @@ install:
   - source activate test-env
 
 script:
-  - pytest --cov="week05-testing" --cov-report html # Your test script goes here
+  - cd week05-testing
+  - pytest --cov --cov-report html # Your test script goes here
