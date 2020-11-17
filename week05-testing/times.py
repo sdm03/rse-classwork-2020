@@ -1,5 +1,6 @@
 import datetime
-
+import requests
+from json import loads
 
 def time_range(start_time, end_time, number_of_intervals=1, gap_between_intervals_s=0):
     start_time_s = datetime.datetime.strptime(start_time, "%Y-%m-%d %H:%M:%S")
@@ -12,7 +13,6 @@ def time_range(start_time, end_time, number_of_intervals=1, gap_between_interval
 
 
 def compute_overlap_time(range1, range2):
-
     overlap_time = []
 
     if len(range1) == 0 or len(range2) == 0:
@@ -35,7 +35,32 @@ def compute_overlap_time(range1, range2):
 
     return overlap_time
 
+def iss_passes(latitude, longitude, altitude=None, passes=None):
+
+    base = "http://api.open-notify.org/iss-pass.json?"
+
+    # Ensure they are no bigger than 80 (mag)
+    if abs(latitude) > 80 and abs(longitude) > 180:
+        raise ValueError("Longitude and latitude must lie within range of -80 to 80")
+    else:
+        params = {'lat': latitude, 'lon':longitude}
+                  
+    if altitude is not None and (altitude <= 0 or altitude > 10000):
+        raise ValueError("Altitude must lie within range of 0+ to 10000")
+    else:
+        # Ensure altitude is an integer
+        params['alt'] =  altitude
+        
+    if passes is not None and (passes <= 0 or passes > 100):
+        raise ValueError("Number of passes must lie within range of 0 to 100")
+    else:
+        params['n'] = passes
+
+    response = requests.get(base, params=params).json()['response']
+    times = [(str(datetime.datetime.fromtimestamp(i['risetime'])), str(datetime.datetime.fromtimestamp(i['risetime']+i['duration']))) for i in response]
+    
+    return times
+
+
 if __name__ == "__main__":
-    large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
-    short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
-    print(compute_overlap_time(large, short))
+    iss_passes(-20, 50)

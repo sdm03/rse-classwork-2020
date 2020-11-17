@@ -1,12 +1,14 @@
-from times import compute_overlap_time, time_range
+from times import compute_overlap_time, time_range, iss_passes
 import pytest 
 from pytest import raises
 import yaml
+from unittest.mock import patch
+import requests
+import json
 
 # Load the yaml file
 with open('week05-testing/fixture.yaml', 'r') as yamlfile:
     fixture = yaml.safe_load(yamlfile)
-    print('Loaded file', fixture)
 
 
 @pytest.mark.parametrize("test_name", fixture)
@@ -70,6 +72,20 @@ def test_empty_range():
         compute_overlap_time(large, short)
 
 
+def test_iss_response():
+    with patch.object(requests, 'get') as mock_get:
+        expected = iss_passes(-20, 50)
+        with open('week05-testing/mock_response.json', 'r') as f:
+            mock_response = json.load(f)
+        mock_get.json.return_value = mock_response
+        mock_get.assert_called_with( "http://api.open-notify.org/iss-pass.json?", params={
+                'lat': -20, 
+                'lon': 50,
+                'alt':None,
+                'n': None}
+                )
+        
+
 if __name__ == "__main__":
 
-    test_several_intervals()
+    test_iss_response()
