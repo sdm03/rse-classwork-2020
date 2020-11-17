@@ -2,3 +2,4 @@ pyyaml
 pytest-cov
 pytest
 requests
+numpy
